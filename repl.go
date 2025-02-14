@@ -13,12 +13,7 @@ type Config struct {
 	pokeapiClient pokeapi.Client
 	Next          *string
 	Previous      *string
-}
-
-type cliCommand struct {
-	name        string
-	description string
-	callback    func(*Config) error
+	arg           *string
 }
 
 func startRepl(config *Config) {
@@ -37,6 +32,11 @@ func startRepl(config *Config) {
 			continue
 		}
 
+		if len(inputs) > 1 {
+			arg := inputs[1]
+			config.arg = &arg
+		}
+
 		err := command.callback(config)
 		if err != nil {
 			fmt.Printf("Error: %v\n", err)
@@ -47,6 +47,12 @@ func startRepl(config *Config) {
 
 func cleanInput(text string) []string {
 	return strings.Fields(strings.ToLower(text))
+}
+
+type cliCommand struct {
+	name        string
+	description string
+	callback    func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -71,10 +77,10 @@ func getCommands() map[string]cliCommand {
 			description: "Get the previous page of locations",
 			callback:    commandMapb,
 		},
-		// "explore": {
-		// 	name:        "explore",
-		// 	description: "",
-		// 	callback:    commandExplore,
-		// },
+		"explore": {
+			name:        "explore",
+			description: "",
+			callback:    commandExplore,
+		},
 	}
 }

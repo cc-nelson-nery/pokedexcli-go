@@ -1,17 +1,16 @@
 package main
 
-// func commandExplore(cfg *Config) {
-// 	locations, err := cfg.pokeapiClient.ListLocations(cfg.Next)
-// 	if err != nil {
-// 		return err
-// 	}
+import "fmt"
 
-// 	for _, location := range locations.Results {
-// 		fmt.Println(location.Name)
-// 	}
+func commandExplore(cfg *Config) error {
+	locations, err := cfg.pokeapiClient.LocationArea(cfg.arg)
+	if err != nil {
+		return err
+	}
 
-// 	cfg.Next = locations.Next
-// 	cfg.Previous = locations.Previous
+	for _, location := range locations.PokemonEncounters {
+		fmt.Println(location.Pokemon.Name)
+	}
 
-// 	return nil
-// }
+	return nil
+}

@@ -6,17 +6,14 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocations(pageURL *string) (LocationList, error) {
-	url := baseURL + "/location-area/"
-	if pageURL != nil {
-		url = *pageURL
-	}
+func (c *Client) LocationArea(arg *string) (LocationAreaStruct, error) {
+	url := baseURL + "/location-area/" + *arg
 
 	if val, ok := c.cache.Get(url); ok {
-		locationsResp := LocationList{}
+		locationsResp := LocationAreaStruct{}
 		err := json.Unmarshal(val, &locationsResp)
 		if err != nil {
-			return LocationList{}, err
+			return LocationAreaStruct{}, err
 		}
 
 		return locationsResp, nil
@@ -24,23 +21,23 @@ func (c *Client) ListLocations(pageURL *string) (LocationList, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return LocationList{}, err
+		return LocationAreaStruct{}, err
 	}
 
 	res, errRes := c.httpClient.Do(req)
 	if errRes != nil {
-		return LocationList{}, errRes
+		return LocationAreaStruct{}, errRes
 	}
 	defer res.Body.Close()
 
 	body, readError := io.ReadAll(res.Body)
 	if readError != nil {
-		return LocationList{}, readError
+		return LocationAreaStruct{}, readError
 	}
 
-	locations := LocationList{}
+	locations := LocationAreaStruct{}
 	if err := json.Unmarshal(body, &locations); err != nil {
-		return LocationList{}, err
+		return LocationAreaStruct{}, err
 	}
 
 	c.cache.Add(url, body)
