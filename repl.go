@@ -14,6 +14,7 @@ type Config struct {
 	Next          *string
 	Previous      *string
 	arg           *string
+	pokedex       map[string]pokeapi.Pokemon
 }
 
 func startRepl(config *Config) {
@@ -86,6 +87,11 @@ func getCommands() map[string]cliCommand {
 			name:        "catch",
 			description: "",
 			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "",
+			callback:    commandInspect,
 		},
 	}
 }
